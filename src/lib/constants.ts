@@ -1,0 +1,1 @@
+export const HOURLY_DATA_LENGTH = 8;
