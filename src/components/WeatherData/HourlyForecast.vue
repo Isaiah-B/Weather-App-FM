@@ -31,8 +31,8 @@
       const hour = startHour + i;
       arr.push({
         time: data?.time[hour]!.toLocaleString('en-US', { hour: 'numeric', hour12: true }),
-        code: data?.weather_codes[hour],
-        temp: data?.temperature[hour],
+        code: data?.weather_codes[hour-prevDayOffset],
+        temp: data?.temperature[hour-prevDayOffset],
       });
     }
 
