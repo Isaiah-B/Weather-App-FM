@@ -1,12 +1,14 @@
 <script setup lang="ts">
+  import { Skeleton } from '../ui/skeleton';
+  
   import type { WeatherData } from '@/lib/types';
 
   const { data } = defineProps<{ data: WeatherData['current'] | undefined }>();
 </script>
 
 <template>
-  <section v-if="data" id="weather-today">
-      <div class="today-main">
+  <section id="weather-today">
+      <div v-if="data" class="today-main-container today-main">
         <div class="today-content">
           <div class="today-content--info">
             <h2>Berlin, Germany</h2>
@@ -19,29 +21,36 @@
         </div>
       </div>
 
+      <div class="today-skeleton-wrapper" v-else>
+        <Skeleton class="today-main-container" />
+        <div class="skeleton-loading">
+          <span>Loading...</span>
+        </div>
+      </div>
+
       <div class="today-data" >
         <div class="weather-data-card">
           <h4>Feels Like</h4>
-          <span>{{ data.apparent_temperature }}°</span>
+          <span v-if="data">{{ data.apparent_temperature }}°</span>
+          <span v-else>-</span>
         </div>
         <div class="weather-data-card">
           <h4>Humidity</h4>
-          <span>{{ data.humidity }}%</span>
+          <span v-if="data">{{ data.humidity }}%</span>
+          <span v-else>-</span>
         </div>
         <div class="weather-data-card">
           <h4>Wind</h4>
-          <span>{{ data.wind }}</span>
+          <span v-if="data">{{ data.wind }}</span>
+          <span v-else>-</span>
         </div>
         <div class="weather-data-card">
           <h4>Precipitation</h4>
-          <span>{{ data.precipitation }}</span>
+          <span v-if="data">{{ data.precipitation }}</span>
+          <span v-else>-</span>
         </div>
       </div>
     </section>
-
-  <div v-else>
-    No data here
-  </div>
 </template>
 
 <style>
@@ -53,16 +62,37 @@
     flex-direction: column;
   }
 
-  .today-main {
+  .today-main-container {
+    display: flex;
     width: 100%;
     border-radius: 20px;
     flex-grow: 1;
-    
+
+    background-color: var(--color-border);
+  }
+
+  .today-main {  
     background-image: url('../../assets/images/bg-today-large.svg');
     background-color: var(--color-card);
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
+  }
+
+  .today-skeleton-wrapper {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+  }
+
+  .skeleton-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    font-size: var(--text-lg);
   }
 
   .today-content {

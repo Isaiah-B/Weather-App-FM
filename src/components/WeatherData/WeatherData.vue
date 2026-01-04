@@ -22,25 +22,21 @@
     current: ["temperature_2m", "apparent_temperature", "relative_humidity_2m", "is_day", "precipitation", "wind_speed_10m", "weather_code"],
   }
 
+  const params = ref(baseParams);
+
   watchEffect(async () => {
-    const params = {
+    params.value = {
       ...baseParams,
       ...units.temperature === "imperial" && { temperature_unit: "fahrenheit" },
       ...units.speed === "imperial" && { wind_speed_unit: "mph" },
       ...units.precipitation === "imperial" && { precipitation_unit: "inch" },
     }
     
-    weatherData.value = await fetchWeatherData(url, units, params);
+    weatherData.value = await fetchWeatherData(url, units, params.value);
   });
 
   watch(() => units, async () => {
-    const params = {
-      ...baseParams,
-      ...units.temperature === "imperial" && { temperature_unit: "fahrenheit" },
-      ...units.speed === "imperial" && { wind_speed_unit: "mph" },
-      ...units.precipitation === "imperial" && { precipitation_unit: "inch" },
-    }
-    weatherData.value = await fetchWeatherData(url, units, params);
+    weatherData.value = await fetchWeatherData(url, units, params.value);
   });
 
 </script>
@@ -58,17 +54,12 @@
 <style>
   .weather-data-layout {
     width: 100%;
+    max-height: 712px;
     display: grid;
     grid-template-columns: 65.8% auto;
-    grid-template-rows: min-content min-content;
+    grid-template-rows: 2fr 1fr;
 
     column-gap: 2rem;
     row-gap: var(--spacing-48);
-  }
-
-  .weather-data-card {
-    background-color: var(--color-card);
-    border: 1px solid var(--color-border);
-    border-radius: 12px;
   }
 </style>

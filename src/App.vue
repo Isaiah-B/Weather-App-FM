@@ -40,6 +40,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    flex-grow: 1;
     align-items: center;
     width: 100%;
     margin-top: var(--spacing-64);
@@ -60,6 +61,7 @@
   #layout-weatherdata {
     display: flex;
     justify-content: center;
+    flex-grow: 1;
     width: 100%;
     margin-top: var(--spacing-48);
   }

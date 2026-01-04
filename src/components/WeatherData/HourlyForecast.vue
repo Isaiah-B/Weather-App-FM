@@ -2,7 +2,10 @@
   import { computed, ref } from 'vue';
   
   import Button from '../ui/button/Button.vue';
+  import { Skeleton } from '../ui/skeleton';
   import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
+  
+  import IconDropdown from '../icons/IconDropdown.vue';
 
   import { HOURLY_DATA_LENGTH } from '@/lib/constants';
   import { GetIconFromWeatherCode } from '@/lib/utils';
@@ -18,7 +21,6 @@
   // Get 8-hour window of time for the selected day
   // starting at the current hour
   const hourlyData = computed(() => {
-    console.log(data);
     const prevDayOffset = 6;  // Skip 6 hours from the previous day
     const currentDayOffset = (selectedDay.value - currentDay) % 7;  // Distance between current and selected days
     const selectedDayOffset = prevDayOffset + currentDayOffset * 24;
@@ -47,8 +49,10 @@
         <h3>Hourly forecast</h3>
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
-            <Button variant="light" size="sm">
-              {{ days[selectedDay] }}
+            <Button :disabled="!data" variant="light" size="sm">
+              <span v-if="data">{{ days.at(selectedDay) }}</span>
+              <span v-else>-</span>
+              <IconDropdown :style="{width: '12px', marginLeft: '5px'}"/>
             </Button>
 
             <DropdownMenuContent align="end" class="days-dropdown">
@@ -65,13 +69,18 @@
       </div>
 
       <div class="hourly-forecast-list">
-        <div v-for="value in hourlyData" class="hourly-data-item">
+        <div v-for="value in hourlyData" v-if="data" class="hourly-data-item">
           <div class="hourly-data-item--left">
             <img :src="`/assets/${GetIconFromWeatherCode(value.code || 0)}`" aria-hidden="true">
             <span>{{ value.time }}</span>
           </div>
           <span class="hourly-data-item--temp">{{ value.temp }}°</span>
         </div>
+
+        <Skeleton v-else
+          v-for="value in hourlyData"
+          class="hourly-data-item data-card-skeleton"
+        />
       </div>
     </div>
   </section>
@@ -100,7 +109,7 @@
   .hourly-forecast-list {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    gap: 16px;
     flex-grow: 1;
   }
 
@@ -108,6 +117,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-grow: 1;
 
     width: 100%;
     padding: var(--spacing-10);

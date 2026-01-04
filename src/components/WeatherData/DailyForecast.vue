@@ -1,7 +1,10 @@
 <script setup lang="ts">
   import { computed } from 'vue';
-  import { GetIconFromWeatherCode } from '@/lib/utils';
+
+  import { Skeleton } from '../ui/skeleton';
+
   import type { WeatherData } from '@/lib/types';
+  import { GetIconFromWeatherCode } from '@/lib/utils';
 
   const { data } = defineProps<{ data: WeatherData['daily'] | undefined }>();
 
@@ -21,7 +24,7 @@
         temp_min: data?.temperature_min[i]
       })
     }
-    
+  
     return arr;
   });
 </script>
@@ -30,18 +33,21 @@
   <section id="daily-forecast">
     <h3>Daily forecast</h3>
     
-    <div v-if="forecastData.length" class="forecast-list">
-      <div v-for="day in forecastData" class="weather-data-card">
-        <h4>{{ day.day }}</h4>
-        <img :src="`/assets/${GetIconFromWeatherCode(day.code || 0)}`" alt="sunny">
-        <div class="forecast-temps">
-          <span>{{ day.temp_max }}°</span>
-          <span>{{ day.temp_min }}°</span>
+    <div class="forecast-list">
+        <div v-for="day in forecastData" v-if="forecastData[0]?.code" class="weather-data-card">
+          <h4>{{ day.day }}</h4>
+          <img :src="`/assets/${GetIconFromWeatherCode(day.code || 0)}`" alt="sunny">
+          <div class="forecast-temps">
+            <span>{{ day.temp_max }}°</span>
+            <span>{{ day.temp_min }}°</span>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <div v-else>Nothing</div>
+        <Skeleton v-else
+          v-for="day in forecastData"
+          class="weather-data-card data-card-skeleton"
+        />
+    </div>
   </section>
 </template>
 
@@ -50,6 +56,10 @@
     grid-column: 1 / 2;
     grid-row: 2 / 3;
     align-self: flex-end;
+
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
   #daily-forecast h3 {
     text-align: start;
@@ -60,6 +70,7 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 1rem;
+    flex-grow: 1;
   }
 
   .forecast-list .weather-data-card {
