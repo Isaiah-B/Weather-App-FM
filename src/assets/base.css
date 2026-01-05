@@ -34,7 +34,7 @@
   --spacing-128: calc(var(--app-spacing) * 16);
   --spacing-140: calc(var(--app-spacing) * 18);
 
-  @media (max-width: 1920px) {
+  @media (max-height: 1158px) {
     --app-spacing: 0.25rem;
   }
 }

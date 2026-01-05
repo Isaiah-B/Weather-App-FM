@@ -1,28 +1,62 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { ref, watch, watchEffect } from 'vue';
+  
   import Header from './components/Header.vue';
   import Searchbar from './components/Searchbar.vue';
-  import WeatherData from './components/WeatherData/WeatherData.vue';
+  import Weather from './components/WeatherData/Weather.vue';
 
   import { AppLocalStorage } from './lib/utils';
-  import type { AppUnits } from './lib/types';
+  import type { AppUnits, WeatherData } from './lib/types';
+  import { baseParams, fetchWeatherData } from './lib/weatherAPI';
+  import Error from './components/Error.vue';
 
   AppLocalStorage.InitLocalStorage();
   
-  const currentUnits = ref(AppLocalStorage.GetLocalStorage());
+  const units = ref(AppLocalStorage.GetLocalStorage());
 
   const onSetUnits = (value: AppUnits) => {
     AppLocalStorage.SetLocalStorage(value);
-    currentUnits.value = value;
+    units.value = value;
   }
-</script>
 
+  const url = "https://api.open-meteo.com/v1/forecast";
+  const params = ref(baseParams);
+  const weatherData = ref<WeatherData | undefined>(undefined);
+  const dataState = ref<'loading' | 'failed' | 'success'>('loading');
+    
+  async function fetchData() {
+    try {
+      weatherData.value = await fetchWeatherData(url, units.value, params.value);
+      dataState.value = 'success';
+    } catch (err: unknown) {
+      dataState.value = 'failed';
+    }
+  }
+
+  watchEffect(async () => {
+    params.value = {
+      ...baseParams,
+      ...units.value.temperature === "imperial" && { temperature_unit: "fahrenheit" },
+      ...units.value.speed === "imperial" && { wind_speed_unit: "mph" },
+      ...units.value.precipitation === "imperial" && { precipitation_unit: "inch" },
+    }
+    
+    await fetchData();
+  });
+
+  watch(() => units, async () => {
+    await fetchData();
+  });
+</script>
+  
 <template>
   <Header
     @setUnits="(value: AppUnits) => onSetUnits(value)"
   />
 
-  <main>
+  <Error v-if="dataState === 'failed'" />
+
+  <main v-else>
     <h1 id="main-header">How's the sky looking today?</h1>
     
     <div id="layout-searchbar">
@@ -30,10 +64,11 @@
     </div>
 
     <div id="layout-weatherdata">
-      <WeatherData :units="currentUnits"/>
+      <Weather :data="weatherData"/>
     </div>
   </main>
 </template>
+
 
 <style scoped>
   main {

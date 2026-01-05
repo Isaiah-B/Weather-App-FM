@@ -3,6 +3,15 @@ import { fetchWeatherApi } from "openmeteo";
 import { GetIconFromWeatherCode } from "./utils";
 import type { AppUnits } from "./types";
 
+export const baseParams = {
+  latitude: 30.3674,
+  longitude: -89.0928,
+  timezone: "auto",
+  hourly: ["temperature_2m", "weather_code"],
+  daily: ["weather_code", "temperature_2m_max", "temperature_2m_min"],
+  current: ["temperature_2m", "apparent_temperature", "relative_humidity_2m", "is_day", "precipitation", "wind_speed_10m", "weather_code"],
+}
+
 export const fetchWeatherData = async (url: string, units: AppUnits, params: any) => {
   const responses = await fetchWeatherApi(url, params);
 
