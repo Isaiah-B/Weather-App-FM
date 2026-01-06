@@ -58,7 +58,7 @@
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="secondary" size="sm" class="units-btn">
+        <Button variant="secondary" size="sm" class="icon-btn">
           <IconUnits />
           Units
           <IconDropdown />
@@ -137,24 +137,6 @@
     justify-content: space-between;
 
     width: 100%;
-  }
-
-  .units-btn {
-    display: flex;
-    align-items: center;
-    height: auto;
-    gap: 10px;
-    padding: 12px;
-    font-size: var(--text-base);
-    line-height: var(--text-base--line-height);
-
-    border: none;
-    border-radius: 8px;
-    background: none;
-    background-color: var(--color-secondary);
-  }
-  .units-btn:hover {
-    background-color: var(--color-secondary-hover);
   }
 
   .unit-group {

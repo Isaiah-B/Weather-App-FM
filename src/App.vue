@@ -4,11 +4,11 @@
   import Header from './components/Header.vue';
   import Searchbar from './components/Searchbar.vue';
   import Weather from './components/WeatherData/Weather.vue';
+  import Error from './components/Error.vue';
 
   import { AppLocalStorage } from './lib/utils';
   import type { AppUnits, WeatherData } from './lib/types';
   import { baseParams, fetchWeatherData } from './lib/weatherAPI';
-  import Error from './components/Error.vue';
 
   AppLocalStorage.InitLocalStorage();
   
@@ -23,7 +23,7 @@
   const params = ref(baseParams);
   const weatherData = ref<WeatherData | undefined>(undefined);
   const dataState = ref<'loading' | 'failed' | 'success'>('loading');
-    
+  
   async function fetchData() {
     try {
       weatherData.value = await fetchWeatherData(url, units.value, params.value);
@@ -43,10 +43,6 @@
     
     await fetchData();
   });
-
-  watch(() => units, async () => {
-    await fetchData();
-  });
 </script>
   
 <template>
@@ -54,7 +50,9 @@
     @setUnits="(value: AppUnits) => onSetUnits(value)"
   />
 
-  <Error v-if="dataState === 'failed'" />
+  <Error v-if="dataState === 'failed'"
+    @onRetry="async () => fetchData()"
+  />
 
   <main v-else>
     <h1 id="main-header">How's the sky looking today?</h1>
