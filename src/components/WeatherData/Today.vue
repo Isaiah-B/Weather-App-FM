@@ -1,22 +1,30 @@
 <script setup lang="ts">
+  import { computed } from 'vue';
   import { Skeleton } from '../ui/skeleton';
   
-  import type { WeatherData } from '@/lib/types';
+  import type { LocationData, WeatherData } from '@/lib/types';
 
-  const { data } = defineProps<{ data: WeatherData['current'] | undefined }>();
+  const { weather, location } = defineProps<{
+    weather: WeatherData['current'] | undefined,
+    location: LocationData | undefined,
+  }>();
+
+  const locationStr = computed(() => [location?.name, location?.country].filter(l => l).join(', '));
 </script>
 
 <template>
   <section id="weather-today">
-      <div v-if="data" class="today-main-container today-main">
+      <div v-if="weather" class="today-main-container today-main">
         <div class="today-content">
           <div class="today-content--info">
-            <h2>Berlin, Germany</h2>
+            <div class="location">
+              <h2>{{ locationStr }}</h2>
+            </div>
             <p>Tuesday, Aug 5, 2025</p>
           </div>
           <div class="today-content--weather">
-            <img :src="`/assets/${data.icon}`" aria-hidden="true">
-            <span>{{ data.temperature }}°</span>
+            <img :src="`/assets/${weather.icon}`" aria-hidden="true">
+            <span>{{ weather.temperature }}°</span>
           </div>
         </div>
       </div>
@@ -31,22 +39,22 @@
       <div class="today-data" >
         <div class="weather-data-card">
           <h4>Feels Like</h4>
-          <span v-if="data">{{ data.apparent_temperature }}°</span>
+          <span v-if="weather">{{ weather.apparent_temperature }}°</span>
           <span v-else>-</span>
         </div>
         <div class="weather-data-card">
           <h4>Humidity</h4>
-          <span v-if="data">{{ data.humidity }}%</span>
+          <span v-if="weather">{{ weather.humidity }}%</span>
           <span v-else>-</span>
         </div>
         <div class="weather-data-card">
           <h4>Wind</h4>
-          <span v-if="data">{{ data.wind }}</span>
+          <span v-if="weather">{{ weather.wind }}</span>
           <span v-else>-</span>
         </div>
         <div class="weather-data-card">
           <h4>Precipitation</h4>
-          <span v-if="data">{{ data.precipitation }}</span>
+          <span v-if="weather">{{ weather.precipitation }}</span>
           <span v-else>-</span>
         </div>
       </div>
@@ -159,5 +167,11 @@
     line-height: var(--text-3xl--line-height);
     font-weight: 300;
     color: var(--color-card-foreground);
+  }
+
+  .location {
+
+  }
+  .location h2 {
   }
 </style>

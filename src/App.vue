@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, watchEffect } from 'vue';
+  import { ref, watchEffect } from 'vue';
   
   import Header from './components/Header.vue';
   import Searchbar from './components/Searchbar.vue';
@@ -9,24 +9,39 @@
   import { AppLocalStorage } from './lib/utils';
   import type { AppUnits, WeatherData } from './lib/types';
   import { baseParams, fetchWeatherData } from './lib/weatherAPI';
+  import { Location } from './lib/locationAPI';
 
   AppLocalStorage.InitLocalStorage();
   
-  const units = ref(AppLocalStorage.GetLocalStorage());
+  const units = ref(AppLocalStorage.GetLocalStorage('units'));
 
   const onSetUnits = (value: AppUnits) => {
-    AppLocalStorage.SetLocalStorage(value);
+    AppLocalStorage.SetLocalStorage('units', value);
     units.value = value;
   }
 
+  const location = ref(AppLocalStorage.GetLocalStorage('location'));
+
   const url = "https://api.open-meteo.com/v1/forecast";
   const params = ref(baseParams);
+
   const weatherData = ref<WeatherData | undefined>(undefined);
   const dataState = ref<'loading' | 'failed' | 'success'>('loading');
-  
+
   async function fetchData() {
     try {
+      dataState.value = 'loading';
       weatherData.value = await fetchWeatherData(url, units.value, params.value);
+      dataState.value = 'success';
+    } catch (err: unknown) {
+      dataState.value = 'failed';
+    }
+  }
+
+  async function changeLoc(locationName: string) {
+    try {
+      dataState.value = 'loading';
+      location.value = await Location().Search(locationName);
       dataState.value = 'success';
     } catch (err: unknown) {
       dataState.value = 'failed';
@@ -36,6 +51,11 @@
   watchEffect(async () => {
     params.value = {
       ...baseParams,
+      
+      latitude: location.value.latitude,
+      longitude: location.value.longitude,
+      timezone: location.value.timezone || "auto",
+
       ...units.value.temperature === "imperial" && { temperature_unit: "fahrenheit" },
       ...units.value.speed === "imperial" && { wind_speed_unit: "mph" },
       ...units.value.precipitation === "imperial" && { precipitation_unit: "inch" },
@@ -43,6 +63,7 @@
     
     await fetchData();
   });
+
 </script>
   
 <template>
@@ -58,11 +79,11 @@
     <h1 id="main-header">How's the sky looking today?</h1>
     
     <div id="layout-searchbar">
-      <Searchbar />
+      <Searchbar @setLocation="(location) => changeLoc(location)"/>
     </div>
 
     <div id="layout-weatherdata">
-      <Weather :data="weatherData"/>
+      <Weather :weather="weatherData" :location="location" :state="dataState"/>
     </div>
   </main>
 </template>

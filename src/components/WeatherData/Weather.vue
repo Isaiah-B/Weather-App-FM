@@ -1,21 +1,28 @@
 <script setup lang="ts">
+  import { computed } from 'vue';
+  
   import Today from './Today.vue';
   import DailyForecast from './DailyForecast.vue';
   import HourlyForecast from './HourlyForecast.vue';
   
-  import type { WeatherData } from '@/lib/types';
+  import type { LocationData, WeatherData } from '@/lib/types';
 
-  const { data } = defineProps<{ data: WeatherData | undefined }>()
+  const { weather, location, state } = defineProps<{
+    weather: WeatherData | undefined,
+    location: LocationData | undefined,
+    state: 'loading' | 'success' | 'failed'
+  }>()
 
+  const isLoading = computed(() => state === 'loading');
 </script>
 
 <template>
   <div class="weather-data-layout">
-    <Today :data="data?.current"/>
+    <Today :weather="isLoading ? undefined : weather?.current" :location="location"/>
 
-    <DailyForecast :data="data?.daily" />
+    <DailyForecast :data="isLoading ? undefined : weather?.daily" />
 
-    <HourlyForecast :data="data?.hourly" />
+    <HourlyForecast :data="isLoading ? undefined : weather?.hourly" />
   </div>
 </template>
 

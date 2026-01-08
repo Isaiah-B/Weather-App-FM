@@ -60,23 +60,38 @@ export class AppLocalStorage {
         precipitation: "si"
       } as AppUnits));  
     };
-  }
 
-  public static SetLocalStorage(value: AppUnits) {
-    const entry = JSON.stringify(value);
-    localStorage.setItem("units", entry);
-  }
-
-  public static GetLocalStorage(): AppUnits {
-    const units = localStorage.getItem("units");
-    if (units) {
-      return JSON.parse(units);
+    if (!localStorage.getItem('location')) {
+      localStorage.setItem('location', JSON.stringify({
+        name: 'berlin',
+        latitude: 52.52437,
+        longitude: 13.41053,
+        timezone: 'Europe/Berlin',
+        country: 'Germany',
+        admin1: undefined,
+        state: undefined
+      }));
     }
-    
-    return {
-      temperature: "si",
-      speed: "si",
-      precipitation: "si"
-    };
+  }
+
+  public static SetLocalStorage(key: string, value: any) {
+    let entry = value;
+    if (value instanceof Object) {
+      entry = JSON.stringify(value);
+    }
+
+    localStorage.setItem(key, entry);
+  }
+
+  public static GetLocalStorage(key: string) {
+    const value = localStorage.getItem(key);
+
+    if (value) {
+      try {
+        return JSON.parse(value);
+      } catch {
+        return value;
+      }
+    }
   }
 }

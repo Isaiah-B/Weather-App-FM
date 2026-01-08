@@ -3,7 +3,16 @@ import { fetchWeatherApi } from "openmeteo";
 import { GetIconFromWeatherCode } from "./utils";
 import type { AppUnits } from "./types";
 
-export const baseParams = {
+interface WeatherDataParams {
+  latitude: number,
+  longitude: number,
+  timezone: string,
+  hourly: string[],
+  daily: string[],
+  current: string[],
+}
+
+export const baseParams: WeatherDataParams = {
   latitude: 30.3674,
   longitude: -89.0928,
   timezone: "auto",

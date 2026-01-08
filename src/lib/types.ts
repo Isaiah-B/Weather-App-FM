@@ -27,3 +27,12 @@ export interface WeatherData {
     temperature: string[]
   }
 };
+
+export interface LocationData {
+  name: string,
+  latitude: number,
+  longitude: number,
+  timezone: string,
+  country?: string,
+  state?: string,
+}
