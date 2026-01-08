@@ -1,20 +1,27 @@
 <script setup lang="ts">
+  import { ref } from 'vue';
+  
   import { Input } from './ui/input';
   import { Button } from './ui/button';
 
   import IconSearch from './icons/IconSearch.vue';
 
+  const emit = defineEmits(['setLocation']);
 
+  const inputValue = ref('');
 </script>
 
 <template>
   <div class="search-bar">
     <div class="input-wrapper">
       <IconSearch />
-      <Input placeholder="Search for a palce..." />
+      <Input
+        placeholder="Search for a palce..."
+        v-model="inputValue"
+      />
     </div>
 
-    <Button>
+    <Button @click="$emit('setLocation', inputValue)">
       Search
     </Button>
   </div>

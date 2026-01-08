@@ -19,7 +19,7 @@
   import type { AppUnits, AppUnit } from '@/lib/types';
 
   const emit = defineEmits(['setUnits', 'setAllImperial']);
-  const selectedUnits = ref(AppLocalStorage.GetLocalStorage());
+  const selectedUnits = ref(AppLocalStorage.GetLocalStorage('units'));
 
   const selected = (unit: keyof AppUnits, value: AppUnit) => {
     return selectedUnits.value[unit] === value
