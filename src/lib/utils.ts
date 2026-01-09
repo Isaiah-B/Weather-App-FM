@@ -1,7 +1,7 @@
 import type { ClassValue } from "clsx"
 import { clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import type { AppUnits } from "./types";
+import type { AppUnits, LocationData } from "./types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -48,6 +48,15 @@ export function GetIconFromWeatherCode(code: number) {
   }
 }
 
+export function formatLocation(location: LocationData, state=false) {
+
+  return [
+    location.name,
+    state ? location.state : null,
+    location.country
+  ].filter(l => l).join(', ');
+}
+
 export class AppLocalStorage {
   constructor() {}
 
@@ -74,13 +83,12 @@ export class AppLocalStorage {
     }
   }
 
-  public static SetLocalStorage(key: string, value: any) {
-    let entry = value;
+  public static SetLocalStorage<T>(key: string, value: T) {
     if (value instanceof Object) {
-      entry = JSON.stringify(value);
+      localStorage.setItem(key, JSON.stringify(value));
+    } else {
+      localStorage.setItem(key, String(value));
     }
-
-    localStorage.setItem(key, entry);
   }
 
   public static GetLocalStorage(key: string) {

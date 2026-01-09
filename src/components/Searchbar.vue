@@ -1,27 +1,81 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  import { computed, ref } from 'vue';
   
   import { Input } from './ui/input';
   import { Button } from './ui/button';
+  import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+  } from './ui/dropdown-menu';
 
   import IconSearch from './icons/IconSearch.vue';
+
+  import { Location } from '@/lib/locationAPI';
+  import type { LocationData } from '@/lib/types';
+  import { formatLocation } from '@/lib/utils';
 
   const emit = defineEmits(['setLocation']);
 
   const inputValue = ref('');
+
+  const searchState = ref<'loading' | 'success' | 'failed'>('loading');
+  const searchResults = ref<LocationData[]>([]);
+  const dropdownOpen = ref(false);
+
+  const search = async (value: string) =>  {
+    try {
+      dropdownOpen.value = true;
+      searchState.value = 'loading';
+      searchResults.value = await Location().Search(value);
+      searchState.value = 'success';
+    } catch {
+      searchState.value = 'failed';
+    }
+  }
+
 </script>
 
 <template>
   <div class="search-bar">
-    <div class="input-wrapper">
-      <IconSearch />
-      <Input
-        placeholder="Search for a palce..."
-        v-model="inputValue"
-      />
-    </div>
+    <DropdownMenu :open="dropdownOpen">
+      <DropdownMenuTrigger as-child>
+        <div class="input-wrapper">
+          <IconSearch />
+          <Input
+            placeholder="Search for a palce..."
+            v-model="inputValue"
+          />
+        </div>
+      </DropdownMenuTrigger>      
 
-    <Button @click="$emit('setLocation', inputValue)">
+      <DropdownMenuContent
+        class="search-dropdown"
+        :side-offset="10"
+        @pointer-down-outside="() => { dropdownOpen = false; searchResults = []; } "
+      >      
+      <DropdownMenuItem v-if="searchState === 'loading'">
+        Search in progress
+      </DropdownMenuItem>
+
+      <div v-else-if="searchState === 'failed' && searchResults.length < 1">
+        No results found
+      </div>
+      
+        <DropdownMenuItem v-else
+          class="dropdown-item search-dropdown-item"
+          v-for="result in searchResults"
+          @click="$emit('setLocation', result)"
+        >
+          <div>
+            {{ formatLocation(result, result.country==='United States') }}
+          </div>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
+    <Button @click="search(inputValue)">
       Search
     </Button>
   </div>
@@ -45,4 +99,14 @@
     padding: 0.625rem 1.5rem;
   }
   
+  .search-dropdown {
+    width: var(--reka-dropdown-menu-trigger-width);
+  }
+  
+  .search-dropdown-item {
+    width: 100%;
+  }
+  .search-dropdown-item:not(.search-dropdown-item:last-of-type) {
+    margin-bottom: 4px;
+  }
 </style>
