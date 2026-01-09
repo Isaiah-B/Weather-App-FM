@@ -65,7 +65,7 @@
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" class="units-dropdown">
         <DropdownMenuItem
           @select.prevent="swapUnit"
           class="dropdown-item"
@@ -144,6 +144,10 @@
   }
   .unit-group .dropdown-item:not(.dropdown-item:last-child) {
     margin-bottom: 4px;
+  }
+
+  .units-dropdown .dropdown-item {
+    width: var(--dropdown-width);
   }
 
   .dropdown-item-text {

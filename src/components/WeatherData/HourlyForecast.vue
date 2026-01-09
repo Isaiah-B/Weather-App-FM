@@ -92,6 +92,10 @@
     grid-row: 1 / 3;
   }
 
+  .days-dropdown .dropdown-item {
+    width: var(--dropdown-width);
+  }
+
   .hourly-data-card {
     display: flex;
     flex-direction: column;

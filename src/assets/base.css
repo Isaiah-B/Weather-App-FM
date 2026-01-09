@@ -34,6 +34,8 @@
   --spacing-128: calc(var(--app-spacing) * 16);
   --spacing-140: calc(var(--app-spacing) * 18);
 
+  --dropdown-width: 198px;
+  
   @media (max-height: 1158px) {
     --app-spacing: 0.25rem;
   }
