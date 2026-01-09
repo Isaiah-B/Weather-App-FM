@@ -49,7 +49,6 @@ export function GetIconFromWeatherCode(code: number) {
 }
 
 export function formatLocation(location: LocationData, state=false) {
-
   return [
     location.name,
     state ? location.state : null,

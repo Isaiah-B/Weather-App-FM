@@ -18,7 +18,7 @@
 
   const emit = defineEmits(['setLocation']);
 
-  const inputValue = ref('');
+  const inputValue = ref<string>('');
 
   const searchState = ref<'loading' | 'success' | 'failed'>('loading');
   const searchResults = ref<LocationData[]>([]);
@@ -40,15 +40,17 @@
 <template>
   <div class="search-bar">
     <DropdownMenu :open="dropdownOpen">
-      <DropdownMenuTrigger as-child>
-        <div class="input-wrapper">
-          <IconSearch />
-          <Input
-            placeholder="Search for a palce..."
-            v-model="inputValue"
-          />
+      <div class="input-wrapper">
+        <DropdownMenuTrigger as-child class="dd-trigger">
+          <div></div>
+        </DropdownMenuTrigger>
+
+        <IconSearch />
+        <Input
+          placeholder="Search for a palce..."
+          v-model.trim="inputValue"
+        />
         </div>
-      </DropdownMenuTrigger>      
 
       <DropdownMenuContent
         class="search-dropdown"
@@ -68,14 +70,12 @@
           v-for="result in searchResults"
           @click="$emit('setLocation', result)"
         >
-          <div>
-            {{ formatLocation(result, result.country==='United States') }}
-          </div>
+          {{ formatLocation(result, result.country==='United States') }}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
 
-    <Button @click="search(inputValue)">
+    <Button @click="async () => search(inputValue)">
       Search
     </Button>
   </div>
@@ -90,6 +90,7 @@
   }
 
   .input-wrapper {
+    position: relative;
     display: flex;
     align-items: center;
     
@@ -97,6 +98,22 @@
     border-radius: var(--radius-12);
     width: 100%;
     padding: 0.625rem 1.5rem;
+  }
+
+  .search-input {
+    width: 100%;
+  }
+
+  .dd-trigger {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+  }
+  .dd-trigger div {
+    width: 100%;
   }
   
   .search-dropdown {
