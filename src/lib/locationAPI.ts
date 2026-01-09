@@ -10,7 +10,7 @@ export const Location = () => ({
     format: "json"
   },
 
-  async Search (location: string) {
+  async Search (location: string): Promise<LocationData[]> {
     this.params.name = location;
 
     const paramStr = Object.entries(this.params).map(e => e[0] + '=' + e[1]).join('&');
@@ -19,21 +19,17 @@ export const Location = () => ({
     const res = await fetch(url, { method: 'GET' });
 
     return await res.json()
-      .then(({ results }) => {
-        const result = results[0];
-
-        const val: LocationData = {
+      .then(({ results }: { results: any[] }) => {
+        const result: LocationData[] = results.map(result => ({
           latitude: result.latitude,
           longitude: result.longitude,
           name: result.name,
           timezone: result.timezone,
           country: result.country === result.name ? undefined : result.country,
           state: result.admin1 ? result.admin1 : undefined,
-        }
-
-        AppLocalStorage.SetLocalStorage('location', val);
-
-        return val;
+        }));
+        
+        return result.slice(0, 4);
       });
   }
 });

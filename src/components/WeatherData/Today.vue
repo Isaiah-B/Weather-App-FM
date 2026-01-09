@@ -3,13 +3,14 @@
   import { Skeleton } from '../ui/skeleton';
   
   import type { LocationData, WeatherData } from '@/lib/types';
+import { formatLocation } from '@/lib/utils';
 
   const { weather, location } = defineProps<{
     weather: WeatherData['current'] | undefined,
     location: LocationData | undefined,
   }>();
 
-  const locationStr = computed(() => [location?.name, location?.country].filter(l => l).join(', '));
+  const locationStr = computed(() => formatLocation(location!, location?.country === 'United States'));
 </script>
 
 <template>
@@ -167,11 +168,5 @@
     line-height: var(--text-3xl--line-height);
     font-weight: 300;
     color: var(--color-card-foreground);
-  }
-
-  .location {
-
-  }
-  .location h2 {
   }
 </style>
