@@ -1,20 +1,26 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, ref, watch } from 'vue';
 
   import { Skeleton } from '../ui/skeleton';
 
   import type { WeatherData } from '@/lib/types';
-  import { GetIconFromWeatherCode } from '@/lib/utils';
+  import { AppLocalStorage, GetIconFromWeatherCode } from '@/lib/utils';
 
   const { data } = defineProps<{ data: WeatherData['daily'] | undefined }>();
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+  const currentDate = ref(new Date((new Date()).toLocaleString([], { timeZone: AppLocalStorage.GetLocalStorage('location').timezone })));
+  
+  watch(() => data, () => {
+    currentDate.value = new Date((new Date()).toLocaleString([], { timeZone: data?.timezone }));
+  })
+
   const forecastData = computed(() => {
     let arr = [];
 
     for (let i = 0; i < 7; i++) {
-      const dayNum = (new Date().getDay() + i) % 7;
+      const dayNum = (currentDate.value.getDay() + i) % 7;
       const day = dayNames[dayNum];
       
       arr.push({

@@ -20,12 +20,14 @@ export interface WeatherData {
     weather_codes: number[],
     temperature_max: string[],
     temperature_min: string[],
+    timezone: string
   },
   hourly: {
     time: Date[],
     weather_codes: number[],
     temperature: string[]
-  }
+    timezone: string
+  },
 };
 
 export interface LocationData {

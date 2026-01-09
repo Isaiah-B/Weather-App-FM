@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { computed, ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
   
   import Button from '../ui/button/Button.vue';
   import { Skeleton } from '../ui/skeleton';
@@ -8,33 +8,43 @@
   import IconDropdown from '../icons/IconDropdown.vue';
 
   import { HOURLY_DATA_LENGTH } from '@/lib/constants';
-  import { GetIconFromWeatherCode } from '@/lib/utils';
+  import { AppLocalStorage, GetIconFromWeatherCode } from '@/lib/utils';
   import type { WeatherData } from '@/lib/types';
 
   const { data } = defineProps<{ data: WeatherData['hourly'] | undefined }>();
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-  const currentDay = new Date().getDay() - 1;
-  const selectedDay = ref(currentDay);
+  // Date in the current location's timezone
+  const locationDate = ref(new Date((new Date()).toLocaleString([], { timeZone: AppLocalStorage.GetLocalStorage('location').timezone })));
+  const selectedDay = ref(locationDate.value.getDay()-1);
 
+  watch(() => data, () => {
+    locationDate.value = new Date((new Date()).toLocaleString([], { timeZone: data?.timezone }))
+    selectedDay.value = locationDate.value.getDay()-1;
+  })
+  
   // Get 8-hour window of time for the selected day
   // starting at the current hour
   const hourlyData = computed(() => {
     const prevDayOffset = 6;  // Skip 6 hours from the previous day
-    const currentDayOffset = (selectedDay.value - currentDay) % 7;  // Distance between current and selected days
+    const currentDayOffset = ((7 + selectedDay.value) - (locationDate.value.getDay()-1)) % 7;  // Distance between current and selected day
     const selectedDayOffset = prevDayOffset + currentDayOffset * 24;
 
-    const currHour = new Date().getHours();
-    const startHour = selectedDayOffset + currHour;
+    const currHour = locationDate.value.getHours();
+    let startHour = selectedDayOffset + currHour;
 
+    if (startHour > data?.time.length!) {
+      startHour = selectedDayOffset;
+    }
+    
     let arr = [];
     for (let i = 0; i < HOURLY_DATA_LENGTH; i++) {
       const hour = startHour + i;
       arr.push({
         time: data?.time[hour]!.toLocaleString('en-US', { hour: 'numeric', hour12: true }),
-        code: data?.weather_codes[hour-prevDayOffset],
-        temp: data?.temperature[hour-prevDayOffset],
+        code: data?.weather_codes[hour-(prevDayOffset-1)],
+        temp: data?.temperature[hour-(prevDayOffset-1)],
       });
     }
 

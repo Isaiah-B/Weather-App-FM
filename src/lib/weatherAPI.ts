@@ -1,7 +1,7 @@
 import { fetchWeatherApi } from "openmeteo";
 
 import { GetIconFromWeatherCode } from "./utils";
-import type { AppUnits } from "./types";
+import type { AppUnits, WeatherData } from "./types";
 
 interface WeatherDataParams {
   latitude: number,
@@ -21,20 +21,22 @@ export const baseParams: WeatherDataParams = {
   current: ["temperature_2m", "apparent_temperature", "relative_humidity_2m", "is_day", "precipitation", "wind_speed_10m", "weather_code"],
 }
 
-export const fetchWeatherData = async (url: string, units: AppUnits, params: any) => {
+export const fetchWeatherData = async (url: string, units: AppUnits, params: any): Promise<WeatherData> => {
   const responses = await fetchWeatherApi(url, params);
 
   const current = responses[0]!.current()!;
   const daily = responses[0]!.daily()!;
   const hourly = responses[0]!.hourly()!;
   const utcOffsetSeconds = responses[0]!.utcOffsetSeconds()!;
-
+  const timezone = responses[0]?.timezone()!;
+  
   const daily_weather_codes = daily.variables(0);
   const daily_temp_max = daily.variables(1);
   const daily_temp_min = daily.variables(2);
 
   const hourly_temp = hourly.variables(0);
   const hourly_weather_codes = hourly.variables(1);
+
 
   return {
     current: {
@@ -50,6 +52,7 @@ export const fetchWeatherData = async (url: string, units: AppUnits, params: any
       weather_codes: Array.from(daily_weather_codes!.valuesArray()?.values()!, (_, i) => daily_weather_codes!.values(i)!),
       temperature_max: Array.from(daily_temp_max!.valuesArray()?.values()!, (_, i) => daily_temp_max!.values(i)!.toFixed(0)),
       temperature_min: Array.from(daily_temp_min!.valuesArray()?.values()!, (_, i) => daily_temp_min!.values(i)!.toFixed(0)),
+      timezone,
     },
     hourly: {
       time: Array.from(
@@ -58,6 +61,7 @@ export const fetchWeatherData = async (url: string, units: AppUnits, params: any
       ),
       weather_codes: Array.from(hourly_weather_codes?.valuesArray()?.values()!, (_, i) => hourly_weather_codes!.values(i)!),
       temperature: Array.from(hourly_temp?.valuesArray()?.values()!, (_, i) => hourly_temp!.values(i)!.toFixed(0)),
-    }
+      timezone,
+    },
   }
 }
