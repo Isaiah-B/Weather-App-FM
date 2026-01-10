@@ -1,16 +1,25 @@
 <script setup lang="ts">
-  import { computed } from 'vue';
+  import { computed, ref, watch } from 'vue';
+
   import { Skeleton } from '../ui/skeleton';
   
   import type { LocationData, WeatherData } from '@/lib/types';
-  import { formatLocation } from '@/lib/utils';
+  import { AppLocalStorage, formatLocation } from '@/lib/utils';
 
   const { weather, location } = defineProps<{
     weather: WeatherData['current'] | undefined,
     location: LocationData | undefined,
   }>();
 
+  const initTimezone = AppLocalStorage.GetLocalStorage('location').timezone;
+  const date = ref(new Date().toLocaleString([], { timeZone: initTimezone, dateStyle: 'full' } ));
+  
   const locationStr = computed(() => formatLocation(location!, location?.country === 'United States'));
+
+  watch(() => location, () => {
+    const timezone = location?.timezone;
+    date.value = new Date().toLocaleString([], { timeZone: timezone, dateStyle: 'full' });
+  });
 </script>
 
 <template>
@@ -21,7 +30,7 @@
             <div class="location">
               <h2>{{ locationStr }}</h2>
             </div>
-            <p>Tuesday, Aug 5, 2025</p>
+            <p>{{ date }}</p>
           </div>
           <div class="today-content--weather">
             <img :src="`/assets/${weather.icon}`" aria-hidden="true">

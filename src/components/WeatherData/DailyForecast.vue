@@ -10,7 +10,13 @@
 
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-  const currentDate = ref(new Date((new Date()).toLocaleString([], { timeZone: AppLocalStorage.GetLocalStorage('location').timezone })));
+  const currentDate = ref(
+    new Date(
+      (new Date()).toLocaleString([], {
+        timeZone: AppLocalStorage.GetLocalStorage('location').timezone
+      })
+    )
+  );
   
   watch(() => data, () => {
     currentDate.value = new Date((new Date()).toLocaleString([], { timeZone: data?.timezone }));
