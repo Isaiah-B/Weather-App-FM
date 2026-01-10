@@ -40,17 +40,18 @@
 <template>
   <div class="search-bar">
     <DropdownMenu :open="dropdownOpen">
-      <div class="input-wrapper">
-        <DropdownMenuTrigger as-child class="dd-trigger">
+      <label class="input-wrapper">
+        <DropdownMenuTrigger as-child class="dropdown-trigger-ref">
           <div></div>
         </DropdownMenuTrigger>
 
         <IconSearch />
         <Input
+          class="search-input"
           placeholder="Search for a palce..."
           v-model.trim="inputValue"
         />
-        </div>
+      </label>
 
       <DropdownMenuContent
         class="search-dropdown"
@@ -98,13 +99,21 @@
     border-radius: var(--radius-12);
     width: 100%;
     padding: 0.625rem 1.5rem;
+    
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .input-wrapper:hover {
+    background-color: var(--color-primary);
   }
 
   .search-input {
     width: 100%;
+    cursor: pointer;
+    box-shadow: none;
   }
 
-  .dd-trigger {
+  .dropdown-trigger-ref {
     position: absolute;
     top: 0;
     left: 0;
@@ -112,7 +121,7 @@
     width: 100%;
     height: 100%;
   }
-  .dd-trigger div {
+  .dropdown-trigger-ref div {
     width: 100%;
   }
   
