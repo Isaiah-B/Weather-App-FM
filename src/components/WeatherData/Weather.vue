@@ -18,11 +18,21 @@
 
 <template>
   <div class="weather-data-layout">
-    <Today :weather="isLoading ? undefined : weather?.current" :location="location"/>
+    <Today
+      id="weather-today"
+      :weather="isLoading ? undefined : weather?.current"
+      :location="location"
+    />
 
-    <DailyForecast :data="isLoading ? undefined : weather?.daily" />
+    <DailyForecast
+      id="daily-forecast"
+      :data="isLoading ? undefined : weather?.daily"
+    />
 
-    <HourlyForecast :data="isLoading ? undefined : weather?.hourly" />
+    <HourlyForecast
+      id="hourly-forecast"
+      :data="isLoading ? undefined : weather?.hourly"
+    />
   </div>
 </template>
 
@@ -32,9 +42,47 @@
     max-height: 691px;
     display: grid;
     grid-template-columns: 65.8% auto;
-    grid-template-rows: 2fr 1fr;
+    grid-template-rows: 2fr auto;
 
     column-gap: 2rem;
     row-gap: var(--spacing-48);
+  }
+
+  #weather-today {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  #daily-forecast {
+    grid-column: 1 / 2;
+    grid-row: 2 / 3;
+    align-self: flex-end;
+
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #hourly-forecast {
+    grid-column: 2 / 3;
+    grid-row: 1 / 3;
+  }
+
+
+
+  @media(max-width: 58em) {
+    .weather-data-layout {
+      max-height: none;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr min-content auto;
+    }
+
+    #hourly-forecast {
+      grid-column: 1 / 2;
+      grid-row: 3 / 4;
+    }
   }
 </style>

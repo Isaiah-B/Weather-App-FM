@@ -39,6 +39,15 @@
   @media (max-height: 1158px) {
     --app-spacing: 0.25rem;
   }
+
+  @media (max-width: 65em) {
+    --text-base: 0.875rem;
+  }
+
+  @media (max-width: 58em) {
+    --text-base: 1rem;
+    --app-spacing: 0.25rem;
+  }
 }
 
 /* semantic color variables for this project */
@@ -85,6 +94,7 @@
 
 body {
   min-height: 100vh;
+  height: 100vh;
   color: var(--color-text);
   background: var(--color-background);
   transition:

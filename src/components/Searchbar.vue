@@ -76,7 +76,10 @@
       </DropdownMenuContent>
     </DropdownMenu>
 
-    <Button @click="async () => search(inputValue)">
+    <Button
+      class="search-btn"
+      @click="async () => { await search(inputValue) }"
+    >
       Search
     </Button>
   </div>
@@ -87,7 +90,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    width: 50%;
+    width: 100%;
   }
 
   .input-wrapper {
@@ -113,6 +116,10 @@
     box-shadow: none;
   }
 
+  .search-btn {
+    border-radius: 12px;
+  }
+
   .dropdown-trigger-ref {
     position: absolute;
     top: 0;
@@ -134,5 +141,20 @@
   }
   .search-dropdown-item:not(.search-dropdown-item:last-of-type) {
     margin-bottom: 4px;
+  }
+
+
+
+  @media (max-width: 33em) {
+    .search-bar {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .search-btn {
+      width: 100%;
+      height: auto;
+      padding: 1rem;
+    }
   }
 </style>

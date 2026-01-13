@@ -34,7 +34,7 @@
     const currHour = locationDate.value.getHours();
     let startHour = selectedDayOffset + currHour;
 
-    if (startHour > data?.time.length!) {
+    if (startHour >= data?.time.length!) {
       startHour = selectedDayOffset;
     }
     
@@ -53,7 +53,7 @@
 </script>
 
 <template>
-  <section id="hourly-forecast">
+  <section>
     <div class="weather-data-card hourly-data-card">
       <div class="hourly-forecast-header">
         <h3>Hourly forecast</h3>
@@ -97,11 +97,6 @@
 </template>
 
 <style>
-  #hourly-forecast {
-    grid-column: 2 / 3;
-    grid-row: 1 / 3;
-  }
-
   .days-dropdown .dropdown-item {
     width: var(--dropdown-width);
   }
@@ -112,6 +107,7 @@
     gap: 16px;
     padding: 24px;
     height: 100%;
+    border: none;
   }
 
   .hourly-forecast-header {
@@ -138,6 +134,7 @@
     padding-right: 16px;
     
     border-radius: 8px;
+    border: 1px solid var(--color-border);
     background-color: var(--color-primary);
   }
 
@@ -158,5 +155,12 @@
   .hourly-data-item--temp {
     font-size: var(--text-base);
     line-height: var(--text-base--line-height);
+  }
+
+
+  @media (max-width: 33em) {
+    .hourly-data-card {
+      padding: 20px 16px;
+    }
   }
 </style>

@@ -54,11 +54,14 @@
 
 <template>
   <header>
-    <img src="../assets/images/logo.svg">
+    <img id="logo" src="../assets/images/logo.svg">
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="secondary" size="sm" class="icon-btn">
+        <Button
+          class="units-btn icon-btn"
+          variant="secondary" size="sm"
+        >
           <IconUnits />
           Units
           <IconDropdown />
@@ -161,5 +164,23 @@
     top: 50%;
     right: 0%;
     transform: translateY(-50%);
+  }
+
+
+  @media (max-width: 33em) {
+    #logo {
+      width: 138px;
+    }
+
+    .units-btn {
+      padding: 8px;
+      font-size: var(--text-sm);
+    }
+    .units-btn svg:nth-child(1) {
+      width: 14px;
+    }
+    .units-btn svg:nth-child(2) {
+      width: 11px;
+    }
   }
 </style>

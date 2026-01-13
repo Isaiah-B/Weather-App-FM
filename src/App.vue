@@ -105,7 +105,7 @@
   #layout-searchbar {
     display: flex;
     justify-content: center;
-    width: 100%;
+    width: calc(1280px / 2);
   }
 
   #layout-weatherdata {
@@ -114,5 +114,22 @@
     flex-grow: 1;
     width: 100%;
     margin-top: var(--spacing-48);
+  }
+
+
+  @media (max-width: 58em) {
+    #main-header {
+      width: 60%;
+    }
+
+    #layout-searchbar {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 33em) {
+    #main-header {
+      width: 100%;
+    }
   }
 </style>

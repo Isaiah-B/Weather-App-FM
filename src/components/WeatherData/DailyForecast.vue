@@ -42,8 +42,8 @@
 </script>
 
 <template>
-  <section id="daily-forecast">
-    <h3>Daily forecast</h3>
+  <section>
+    <h3 class="daily-forecast-header">Daily forecast</h3>
     
     <div class="forecast-list">
         <div v-for="day in forecastData" v-if="forecastData[0]?.code" class="weather-data-card">
@@ -64,16 +64,7 @@
 </template>
 
 <style>
-  #daily-forecast {
-    grid-column: 1 / 2;
-    grid-row: 2 / 3;
-    align-self: flex-end;
-
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-  #daily-forecast h3 {
+  .daily-forecast-header {
     text-align: start;
     margin-bottom: 1.25rem;
   }
@@ -97,5 +88,18 @@
   .forecast-temps span {
     font-size: var(--text-base);
     line-height: var(--text-base--line-height);
+  }
+
+
+  @media (max-width: 42em) {
+    .forecast-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .forecast-list .weather-data-card {
+      width: 100px;
+      height: 165px;
+    }
   }
 </style>
