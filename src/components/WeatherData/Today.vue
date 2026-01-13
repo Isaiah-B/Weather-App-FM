@@ -23,7 +23,7 @@
 </script>
 
 <template>
-  <section id="weather-today">
+  <section>
       <div v-if="weather" class="today-main-container today-main">
         <div class="today-content">
           <div class="today-content--info">
@@ -140,10 +140,11 @@
   .today-content--weather {
     display: flex;
     align-items: center;
+    justify-content: flex-end;
+    flex-shrink: 0;
   }
   .today-content--weather img {
     width: 120px;
-    height: 120px;
   }
 
   .today-content--weather span {
@@ -181,5 +182,43 @@
 
   .location {
     text-transform: capitalize;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
+
+  
+  @media(max-width: 65em) {
+    .today-data {
+      gap: 14px;
+    }
+  }
+
+  @media(max-width: 58em) {
+    .today-data {
+      margin-top: 1.25rem;
+    }
+  }
+
+  @media(max-width: 42em) {
+    .today-data {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+    }
+  }
+
+  @media(max-width: 33em) {
+    .today-content {
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .today-content--info {
+      text-align: center;
+    }
   }
 </style>
