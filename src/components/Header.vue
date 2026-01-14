@@ -33,7 +33,7 @@
   }
 
   const swapUnit = () => {
-    let unit: AppUnit = anyNotImperial() 
+    let unit: AppUnit = anySISelected() 
       ? "imperial"
       : "si"
     
@@ -47,14 +47,14 @@
     selectedUnits.value = newUnitsValue;
   }
 
-  const anyNotImperial = () => {
+  const anySISelected = () => {
     return Object.values(selectedUnits.value).some(val => val === 'si');
   }
 </script>
 
 <template>
   <header>
-    <img id="logo" src="../assets/images/logo.svg">
+    <img id="logo" alt="logo" src="../assets/images/logo.svg">
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
@@ -73,7 +73,7 @@
           @select.prevent="swapUnit"
           class="dropdown-item"
         >
-          {{ anyNotImperial() ? "Switch to Imperial" : "Switch to Metric" }}
+          {{ anySISelected() ? "Switch to Imperial" : "Switch to Metric" }}
         </DropdownMenuItem>
 
         <DropdownMenuLabel>Temperature</DropdownMenuLabel>

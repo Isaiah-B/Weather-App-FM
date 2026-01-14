@@ -31,7 +31,7 @@
       
       arr.push({
         day,
-        code: data?.weather_codes[i],
+        icon: GetIconFromWeatherCode(data?.weather_codes[i] || 0),
         temp_max: data?.temperature_max[i],
         temp_min: data?.temperature_min[i]
       })
@@ -46,9 +46,9 @@
     <h3 class="daily-forecast-header">Daily forecast</h3>
     
     <div class="forecast-list">
-        <div v-for="day in forecastData" v-if="forecastData[0]?.code" class="weather-data-card">
+        <div v-for="day in forecastData" v-if="forecastData[0]?.icon" class="weather-data-card">
           <h4>{{ day.day }}</h4>
-          <img :src="`/assets/${GetIconFromWeatherCode(day.code || 0)}`" alt="sunny">
+          <img :src="`/assets/${day.icon}`" :alt="day.icon.slice(0, -5)">
           <div class="forecast-temps">
             <span>{{ day.temp_max }}°</span>
             <span>{{ day.temp_min }}°</span>

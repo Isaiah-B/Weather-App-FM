@@ -40,13 +40,14 @@
 <template>
   <div class="search-bar">
     <DropdownMenu :open="dropdownOpen">
-      <label class="input-wrapper">
+      <label for="searchbar-input" class="input-wrapper">
         <DropdownMenuTrigger as-child class="dropdown-trigger-ref">
           <div></div>
         </DropdownMenuTrigger>
 
         <IconSearch />
         <Input
+          id="searchbar-input"
           class="search-input"
           placeholder="Search for a palce..."
           v-model.trim="inputValue"
